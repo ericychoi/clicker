@@ -5,19 +5,17 @@ import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
-import android.widget.ArrayAdapter;
-import android.widget.TextView;
-
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.Button;
+import android.widget.ImageView;
 
 public class ClickerMain extends Activity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -112,6 +110,7 @@ public class ClickerMain extends Activity
          * fragment.
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
+        private Metronome metronome;
 
         /**
          * Returns a new instance of this fragment for the given section
@@ -131,7 +130,19 @@ public class ClickerMain extends Activity
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_clicker_main, container, false);
+            final View rootView = inflater.inflate(R.layout.fragment_clicker_main, container, false);
+            final Button button = (Button) rootView.findViewById(R.id.start_button);
+            button.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    ImageView needle = (ImageView) rootView.findViewById(R.id.metronome_needle);
+                    Animation needleTurn = AnimationUtils.loadAnimation(v.getContext(), R.anim.needle_rotate);
+                    needle.startAnimation(needleTurn);
+                    metronome.startMetronome(v);
+                }
+            });
+
+            this.metronome = new Metronome((ImageView) rootView.findViewById(R.id.metronome_circle_left));
+
             return rootView;
         }
 
@@ -141,6 +152,7 @@ public class ClickerMain extends Activity
             ((ClickerMain) activity).onSectionAttached(
                     getArguments().getInt(ARG_SECTION_NUMBER));
         }
+
     }
 
 }

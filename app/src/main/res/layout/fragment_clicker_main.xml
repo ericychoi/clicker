@@ -27,7 +27,7 @@
                 android:layout_height="wrap_content">
 
                 <RelativeLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
                     android:orientation="vertical"
                     android:layout_weight="1">
@@ -50,7 +50,7 @@
                             android:text="..."/>
                     </LinearLayout>
                     <ImageView
-                        android:src="@drawable/bar"
+                        android:src="@drawable/needle"
                         android:layout_width="wrap_content"
                         android:layout_alignParentBottom="true"
                         android:layout_centerHorizontal="true"
@@ -58,7 +58,25 @@
                         android:layout_height="fill_parent"
                         android:layout_below="@id/top_status"
                         android:layout_marginTop="20dp"
-                        android:id="@+id/metronome_bar" />
+                        android:id="@+id/metronome_needle" />
+                    <ImageView
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentBottom="true"
+                        android:src="@drawable/circle"
+                        android:id="@+id/metronome_circle_left"
+                        android:layout_marginBottom="20dp"
+                        android:layout_marginLeft="20dp"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp" />
+                    <ImageView
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentBottom="true"
+                        android:src="@drawable/circle"
+                        android:id="@+id/metronome_circle_right"
+                        android:layout_marginBottom="20dp"
+                        android:layout_margin="20dp"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp" />
                 </RelativeLayout>
 
             </LinearLayout>
@@ -66,10 +84,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:orientation="horizontal">
-                <Button android:text="UP" android:id="@+id/button1" android:layout_width="fill_parent" android:layout_height="fill_parent" android:layout_weight="1"></Button>
-                <Button android:text="DOWN" android:id="@+id/button2" android:layout_width="fill_parent" android:layout_height="fill_parent" android:layout_weight="1"></Button>
+                <Button android:text="UP" android:id="@+id/button1" android:layout_width="fill_parent" android:layout_height="fill_parent" android:layout_weight="1"/>
+                <Button android:text="DOWN" android:id="@+id/button2" android:layout_width="fill_parent" android:layout_height="fill_parent" android:layout_weight="1"/>
             </LinearLayout>
-            <Button android:text="START / STOP" android:id="@+id/button3" android:layout_width="fill_parent" android:layout_height="50dp" android:layout_alignParentBottom="true"></Button>
+            <Button android:text="START / STOP" android:id="@+id/start_button" android:layout_width="fill_parent" android:layout_height="50dp" android:layout_alignParentBottom="true"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
