@@ -52,7 +52,8 @@ public class Metronome {
         a.runOnUiThread( new Runnable() {
           @Override
           public void run() {
-            //circle.setAlpha(1.0f);
+            // not sure why, but can't rely on fillBefore on animation for this
+            circle.setAlpha(1.0f);
             circle.startAnimation(circleAnimation);
           }
         });

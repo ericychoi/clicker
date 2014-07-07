@@ -144,8 +144,8 @@ public class ClickerMain extends Activity
 
       ImageView leftCircle = (ImageView) rootView.findViewById(R.id.metronome_circle_left);
       ImageView rightCircle = (ImageView) rootView.findViewById(R.id.metronome_circle_right);
-      //leftCircle.setAlpha (0.0f);
-      //rightCircle.setAlpha(0.0f);
+      leftCircle.setAlpha (0.0f);
+      rightCircle.setAlpha(0.0f);
 
       this.metronome = new Metronome(
               (ImageView) rootView.findViewById(R.id.metronome_circle_left),
