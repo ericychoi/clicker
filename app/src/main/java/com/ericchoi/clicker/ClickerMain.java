@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -43,6 +44,7 @@ public class ClickerMain extends Activity
     mNavigationDrawerFragment.setUp(
             R.id.navigation_drawer,
             (DrawerLayout) findViewById(R.id.drawer_layout));
+
   }
 
   @Override
@@ -138,6 +140,7 @@ public class ClickerMain extends Activity
           Animation needleTurn = AnimationUtils.loadAnimation(v.getContext(), R.anim.needle_rotate);
           //TODO
           //needle.startAnimation(needleTurn);
+
           metronome.startMetronome(v);
         }
       });
@@ -147,11 +150,11 @@ public class ClickerMain extends Activity
       leftCircle.setAlpha (0.0f);
       rightCircle.setAlpha(0.0f);
 
-      this.metronome = new Metronome(
-              (ImageView) rootView.findViewById(R.id.metronome_circle_left),
-              (ImageView) rootView.findViewById(R.id.metronome_circle_right)
-      );
+      //TODO create a pool of media players?
+      // set up audio track
+      MediaPlayer clickMediaPlayer = MediaPlayer.create(rootView.getContext(), R.raw.click);
 
+      this.metronome = new Metronome(leftCircle, rightCircle, clickMediaPlayer);
       return rootView;
     }
 

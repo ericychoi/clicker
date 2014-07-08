@@ -1,6 +1,8 @@
 package com.ericchoi.clicker;
 
 import android.app.Activity;
+import android.media.MediaPlayer;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
@@ -20,13 +22,15 @@ public class Metronome {
   private ImageView rightCircle;
   private Animation rightCircleFadeOut;
   private AtomicBoolean isLeftsTurn;
+  private MediaPlayer clickMediaPlayer;
 
-  public Metronome(ImageView leftCircle, ImageView rightCircle) {
+  public Metronome(ImageView leftCircle, ImageView rightCircle, MediaPlayer mp) {
     this.leftCircle = leftCircle;
     this.leftCircleFadeOut = AnimationUtils.loadAnimation(leftCircle.getContext(), R.anim.circle_fade_out);
     this.rightCircle = rightCircle;
     this.rightCircleFadeOut = AnimationUtils.loadAnimation(rightCircle.getContext(), R.anim.circle_fade_out);
     isLeftsTurn = new AtomicBoolean(true);
+    this.clickMediaPlayer = mp;
   }
 
   void startMetronome(final View v) {
@@ -55,6 +59,7 @@ public class Metronome {
             // not sure why, but can't rely on fillBefore on animation for this
             circle.setAlpha(1.0f);
             circle.startAnimation(circleAnimation);
+            clickMediaPlayer.start();
           }
         });
       }
