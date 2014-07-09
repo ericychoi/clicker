@@ -5,7 +5,9 @@ import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.SoundPool;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -132,15 +134,12 @@ public class ClickerMain extends Activity
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+      //TODO factor set up code out
       final View rootView = inflater.inflate(R.layout.fragment_clicker_main, container, false);
       final Button button = (Button) rootView.findViewById(R.id.start_button);
+
       button.setOnClickListener(new View.OnClickListener() {
         public void onClick(View v) {
-          ImageView needle = (ImageView) rootView.findViewById(R.id.metronome_needle);
-          Animation needleTurn = AnimationUtils.loadAnimation(v.getContext(), R.anim.needle_rotate);
-          //TODO
-          //needle.startAnimation(needleTurn);
-
           metronome.startMetronome(v);
         }
       });
@@ -149,12 +148,13 @@ public class ClickerMain extends Activity
       ImageView rightCircle = (ImageView) rootView.findViewById(R.id.metronome_circle_right);
       leftCircle.setAlpha (0.0f);
       rightCircle.setAlpha(0.0f);
+      ImageView needle = (ImageView) rootView.findViewById(R.id.metronome_needle);
 
-      //TODO create a pool of media players?
       // set up audio track
-      MediaPlayer clickMediaPlayer = MediaPlayer.create(rootView.getContext(), R.raw.click);
+      SoundPool clickSP = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
+      int soundId = clickSP.load(rootView.getContext(), R.raw.click, 1);
 
-      this.metronome = new Metronome(leftCircle, rightCircle, clickMediaPlayer);
+      this.metronome = new Metronome(leftCircle, rightCircle, needle, clickSP, soundId);
       return rootView;
     }
 

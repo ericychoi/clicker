@@ -1,7 +1,9 @@
 package com.ericchoi.clicker;
 
 import android.app.Activity;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.SoundPool;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
@@ -21,16 +23,23 @@ public class Metronome {
   private Animation leftCircleFadeOut;
   private ImageView rightCircle;
   private Animation rightCircleFadeOut;
-  private AtomicBoolean isLeftsTurn;
-  private MediaPlayer clickMediaPlayer;
+  private ImageView needle;
+  private Animation needleTurn;
+  final private AtomicBoolean isLeftsTurn;
+  private int clickSoundId;
+  private SoundPool clickSoundPool;
 
-  public Metronome(ImageView leftCircle, ImageView rightCircle, MediaPlayer mp) {
+  public Metronome(ImageView leftCircle, ImageView rightCircle, ImageView needle, SoundPool sp, int clickSoundId) {
     this.leftCircle = leftCircle;
     this.leftCircleFadeOut = AnimationUtils.loadAnimation(leftCircle.getContext(), R.anim.circle_fade_out);
     this.rightCircle = rightCircle;
     this.rightCircleFadeOut = AnimationUtils.loadAnimation(rightCircle.getContext(), R.anim.circle_fade_out);
+    this.needle = needle;
+    this.needleTurn = AnimationUtils.loadAnimation(needle.getContext(), R.anim.needle_rotate);
+    this.clickSoundPool = sp;
+    this.clickSoundId = clickSoundId;
+
     isLeftsTurn = new AtomicBoolean(true);
-    this.clickMediaPlayer = mp;
   }
 
   void startMetronome(final View v) {
@@ -59,13 +68,16 @@ public class Metronome {
             // not sure why, but can't rely on fillBefore on animation for this
             circle.setAlpha(1.0f);
             circle.startAnimation(circleAnimation);
-            clickMediaPlayer.start();
-          }
+            //TODO make this alternate
+            needleTurn.setDuration(600);
+            needle.startAnimation(needleTurn);
+            clickSoundPool.play(clickSoundId, 1.0f, 1.0f, 1, 0, 1.0f);
+            }
         });
       }
     };
 
-    final ScheduledFuture clickerHandle = scheduler.scheduleAtFixedRate(clicker, 0, 1, TimeUnit.SECONDS);
+    final ScheduledFuture clickerHandle = scheduler.scheduleAtFixedRate(clicker, 0, 600, TimeUnit.MILLISECONDS);
     scheduler.schedule(new Runnable() {
       public void run() {
         //    clickerHandle.cancel(true);
