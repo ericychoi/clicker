@@ -140,9 +140,13 @@ public class ClickerMain extends Activity
 
       button.setOnClickListener(new View.OnClickListener() {
         public void onClick(View v) {
-          metronome.startMetronome(v);
+          metronome.startOrStopMetronome(v);
         }
       });
+
+      //TODO update tempo
+      //TODO clean up on close
+      //TODO clean up on resume
 
       ImageView leftCircle = (ImageView) rootView.findViewById(R.id.metronome_circle_left);
       ImageView rightCircle = (ImageView) rootView.findViewById(R.id.metronome_circle_right);
