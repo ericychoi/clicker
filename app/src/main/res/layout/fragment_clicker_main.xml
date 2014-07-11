@@ -84,8 +84,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:orientation="horizontal">
-                <Button android:text="UP" android:id="@+id/button1" android:layout_width="fill_parent" android:layout_height="fill_parent" android:layout_weight="1"/>
-                <Button android:text="DOWN" android:id="@+id/button2" android:layout_width="fill_parent" android:layout_height="fill_parent" android:layout_weight="1"/>
+                <Button android:text="UP" android:id="@+id/up_button" android:layout_width="fill_parent" android:layout_height="fill_parent" android:layout_weight="1"/>
+                <Button android:text="DOWN" android:id="@+id/down_button" android:layout_width="fill_parent" android:layout_height="fill_parent" android:layout_weight="1"/>
             </LinearLayout>
             <Button android:text="START" android:id="@+id/start_button" android:layout_width="fill_parent" android:layout_height="50dp" android:layout_alignParentBottom="true"/>
         </LinearLayout>

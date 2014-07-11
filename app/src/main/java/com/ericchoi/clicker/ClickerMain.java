@@ -6,7 +6,6 @@ import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,8 +14,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 
@@ -136,11 +133,23 @@ public class ClickerMain extends Activity
                              Bundle savedInstanceState) {
       //TODO factor set up code out
       final View rootView = inflater.inflate(R.layout.fragment_clicker_main, container, false);
-      final Button button = (Button) rootView.findViewById(R.id.start_button);
-
-      button.setOnClickListener(new View.OnClickListener() {
+      final Button startButton = (Button) rootView.findViewById(R.id.start_button);
+      startButton.setOnClickListener(new View.OnClickListener() {
         public void onClick(View v) {
           metronome.startOrStopMetronome(v);
+        }
+      });
+      final Button upButton = (Button) rootView.findViewById(R.id.up_button);
+      upButton.setOnClickListener(new View.OnClickListener() {
+        public void onClick(View v) {
+          metronome.increaseTempo(v);
+        }
+      });
+
+      final Button downButton = (Button) rootView.findViewById(R.id.down_button);
+      downButton.setOnClickListener(new View.OnClickListener() {
+        public void onClick(View v) {
+          metronome.decreaseTempo(v);
         }
       });
 
@@ -158,7 +167,8 @@ public class ClickerMain extends Activity
       SoundPool clickSP = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
       int soundId = clickSP.load(rootView.getContext(), R.raw.click, 1);
 
-      this.metronome = new Metronome(leftCircle, rightCircle, needle, clickSP, soundId);
+      //TODO make initial tempo a configurable value
+      this.metronome = new Metronome(leftCircle, rightCircle, needle, clickSP, soundId, 100);
       return rootView;
     }
 

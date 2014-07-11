@@ -36,11 +36,13 @@ public class Metronome {
   final private AtomicBoolean isRunning;
   final private AtomicBoolean isLeftsTurn;
 
+  final private AtomicInteger tempo;
+
   public boolean isRunning() {
     return isRunning.get();
   }
 
-  public Metronome(ImageView leftCircle, ImageView rightCircle, ImageView needle, SoundPool sp, int clickSoundId) {
+  public Metronome(ImageView leftCircle, ImageView rightCircle, ImageView needle, SoundPool sp, int clickSoundId, int initialTempo) {
     this.leftCircle = leftCircle;
     this.leftCircleFadeOut = AnimationUtils.loadAnimation(leftCircle.getContext(), R.anim.circle_fade_out);
     this.rightCircle = rightCircle;
@@ -55,10 +57,13 @@ public class Metronome {
 
     isLeftsTurn = new AtomicBoolean(true);
     isRunning = new AtomicBoolean(false);
+
+    tempo = new AtomicInteger(initialTempo);
   }
 
   void startMetronome(final View v) {
     Log.v("metronome", "start!");
+    final AtomicInteger interval = new AtomicInteger(computeInterval()); // interval in ms
 
     //TODO factor out this Runnable
     final Runnable clicker = new Runnable() {
@@ -90,7 +95,7 @@ public class Metronome {
             // not sure why, but can't rely on fillBefore on animation for this
             circle.setAlpha(1.0f);
             circle.startAnimation(circleAnimation);
-            needleAnimation.setDuration(300);
+            needleAnimation.setDuration(interval.get());
             needle.startAnimation(needleAnimation);
             clickSoundPool.play(clickSoundId, 1.0f, 1.0f, 1, 0, 1.0f);
             }
@@ -98,7 +103,7 @@ public class Metronome {
       }
     };
 
-    this.clickerHandle = scheduler.scheduleAtFixedRate(clicker, 0, 300, TimeUnit.MILLISECONDS);
+    this.clickerHandle = scheduler.scheduleAtFixedRate(clicker, 0, interval.get(), TimeUnit.MILLISECONDS);
   }
 
   void stopMetronome(final View v) {
@@ -116,6 +121,26 @@ public class Metronome {
       isRunning.set(true);
       startMetronome(v);
     }
+  }
+
+  void increaseTempo(View v) {
+    this.tempo.getAndIncrement();
+    if (this.isRunning()) restart(v);
+  }
+
+  void decreaseTempo(View v) {
+    this.tempo.getAndDecrement();
+    if (this.isRunning()) restart(v);
+  }
+
+  void restart(View v) {
+    stopMetronome(v);
+    startMetronome(v);
+  }
+
+  //TODO
+  int computeInterval() {
+    return 600;
   }
 }
 
