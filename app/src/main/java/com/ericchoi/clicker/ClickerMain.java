@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 public class ClickerMain extends Activity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -153,9 +154,11 @@ public class ClickerMain extends Activity
         }
       });
 
-      //TODO update tempo
+      //TODO long press on up / down button
       //TODO clean up on close
       //TODO clean up on resume
+      //TODO deal with it you have a phone call coming
+      //TODO update text on start stop button
 
       ImageView leftCircle = (ImageView) rootView.findViewById(R.id.metronome_circle_left);
       ImageView rightCircle = (ImageView) rootView.findViewById(R.id.metronome_circle_right);
@@ -164,11 +167,15 @@ public class ClickerMain extends Activity
       ImageView needle = (ImageView) rootView.findViewById(R.id.metronome_needle);
 
       // set up audio track
+      //TODO make initial pool size a config value
       SoundPool clickSP = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
       int soundId = clickSP.load(rootView.getContext(), R.raw.click, 1);
 
       //TODO make initial tempo a configurable value
-      this.metronome = new Metronome(leftCircle, rightCircle, needle, clickSP, soundId, 100);
+      int initialTempo = 100;
+      TextView tempoView = (TextView) rootView.findViewById(R.id.tempo);
+      this.metronome = new Metronome(leftCircle, rightCircle, needle, clickSP, soundId, initialTempo, tempoView);
+
       return rootView;
     }
 

@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -37,12 +38,14 @@ public class Metronome {
   final private AtomicBoolean isLeftsTurn;
 
   final private AtomicInteger tempo;
+  private TextView tempoView;
 
   public boolean isRunning() {
     return isRunning.get();
   }
 
-  public Metronome(ImageView leftCircle, ImageView rightCircle, ImageView needle, SoundPool sp, int clickSoundId, int initialTempo) {
+  public Metronome(ImageView leftCircle, ImageView rightCircle, ImageView needle, SoundPool sp,
+                   int clickSoundId, int initialTempo, TextView tempoView) {
     this.leftCircle = leftCircle;
     this.leftCircleFadeOut = AnimationUtils.loadAnimation(leftCircle.getContext(), R.anim.circle_fade_out);
     this.rightCircle = rightCircle;
@@ -59,11 +62,13 @@ public class Metronome {
     isRunning = new AtomicBoolean(false);
 
     tempo = new AtomicInteger(initialTempo);
+    this.tempoView = tempoView;
+    updateTempoView();
   }
 
   void startMetronome(final View v) {
-    Log.v("metronome", "start!");
     final AtomicInteger interval = new AtomicInteger(computeInterval()); // interval in ms
+    Log.v("metronome", "starting with interval: " + interval.get());
 
     //TODO factor out this Runnable
     final Runnable clicker = new Runnable() {
@@ -126,11 +131,13 @@ public class Metronome {
   void increaseTempo(View v) {
     this.tempo.getAndIncrement();
     if (this.isRunning()) restart(v);
+    updateTempoView();
   }
 
   void decreaseTempo(View v) {
     this.tempo.getAndDecrement();
     if (this.isRunning()) restart(v);
+    updateTempoView();
   }
 
   void restart(View v) {
@@ -138,9 +145,13 @@ public class Metronome {
     startMetronome(v);
   }
 
-  //TODO
+  // computes timer interval in milliseconds from tempo (BPM)
   int computeInterval() {
-    return 600;
+    return 60 * 1000 / this.tempo.get();
+  }
+
+  void updateTempoView() {
+    this.tempoView.setText(this.tempo.get() + "");
   }
 }
 

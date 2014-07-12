@@ -36,18 +36,41 @@
                         android:layout_width="fill_parent"
                         android:layout_height="50dp"
                         android:orientation="horizontal" android:layout_alignParentTop="true" android:id="@+id/top_status">
-                        <TextView
-                            android:id="@+id/label"
+                        <LinearLayout
                             android:layout_width="fill_parent"
                             android:layout_height="fill_parent"
-                            android:layout_weight="1"
-                            android:text="120" android:textSize="46dp" android:gravity="center"/>
-                        <TextView
-                            android:id="@+id/label"
+                            android:layout_weight="1">
+                            <TextView
+                                android:id="@+id/label"
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent"
+                                android:layout_weight="1"
+                                android:text="Beat"/>
+                            <TextView
+                                android:id="@+id/label"
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent"
+                                android:layout_weight="2"
+                                android:textSize="46dp"
+                                android:text="4"/>
+                        </LinearLayout>
+                        <LinearLayout
                             android:layout_width="fill_parent"
                             android:layout_height="fill_parent"
-                            android:layout_weight="1"
-                            android:text="..."/>
+                            android:layout_weight="1">
+                            <TextView
+                              android:id="@+id/label"
+                              android:layout_width="fill_parent"
+                              android:layout_height="fill_parent"
+                              android:layout_weight="2"
+                              android:text="BPM"/>
+                            <TextView
+                                android:id="@+id/tempo"
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent"
+                                android:layout_weight="1"
+                                android:text="120" android:textSize="46dp" android:gravity="center"/>
+                        </LinearLayout>
                     </LinearLayout>
                     <ImageView
                         android:src="@drawable/needle"
