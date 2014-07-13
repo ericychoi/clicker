@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
@@ -133,6 +134,16 @@ public class ClickerMain extends Activity
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
       //TODO factor set up code out
+      View.OnTouchListener buttonTouchListener = new View.OnTouchListener() {
+        public boolean onTouch(View v, MotionEvent event) {
+          if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
+            metronome.stopAutoMode();
+            return true;
+          }
+          return false;
+        }
+      };
+
       final View rootView = inflater.inflate(R.layout.fragment_clicker_main, container, false);
       final Button startButton = (Button) rootView.findViewById(R.id.start_button);
       startButton.setOnClickListener(new View.OnClickListener() {
@@ -146,6 +157,13 @@ public class ClickerMain extends Activity
           metronome.increaseTempo(v);
         }
       });
+      upButton.setOnLongClickListener(new View.OnLongClickListener() {
+        public boolean onLongClick(View v) {
+          metronome.startAutoMode(v, true);
+          return false;
+        }
+      });
+      upButton.setOnTouchListener(buttonTouchListener);
 
       final Button downButton = (Button) rootView.findViewById(R.id.down_button);
       downButton.setOnClickListener(new View.OnClickListener() {
@@ -153,8 +171,16 @@ public class ClickerMain extends Activity
           metronome.decreaseTempo(v);
         }
       });
+      downButton.setOnLongClickListener(new View.OnLongClickListener() {
+        public boolean onLongClick(View v) {
+          metronome.startAutoMode(v, false);
+          return false;
+        }
+      });
+      downButton.setOnTouchListener(buttonTouchListener);
 
-      //TODO long press on up / down button
+      //TODO fix a bug where auto update stop and clicking one more triggers auto update
+
       //TODO clean up on close
       //TODO clean up on resume
       //TODO deal with it you have a phone call coming

@@ -22,6 +22,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class Metronome {
   private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(100);
   private ScheduledFuture clickerHandle;
+  private ScheduledFuture autoHandle;
 
   private ImageView leftCircle;
   private Animation leftCircleFadeOut;
@@ -38,7 +39,7 @@ public class Metronome {
   final private AtomicBoolean isLeftsTurn;
 
   final private AtomicInteger tempo;
-  private TextView tempoView;
+  final private TextView tempoView;
 
   public boolean isRunning() {
     return isRunning.get();
@@ -129,6 +130,7 @@ public class Metronome {
   }
 
   void increaseTempo(View v) {
+    Log.v("metronome", "update called");
     this.tempo.getAndIncrement();
     if (this.isRunning()) restart(v);
     updateTempoView();
@@ -138,6 +140,41 @@ public class Metronome {
     this.tempo.getAndDecrement();
     if (this.isRunning()) restart(v);
     updateTempoView();
+  }
+
+  // spins up a thread that auto-increments (or decrements) the tempo display
+  void startAutoMode(final View v, final boolean isIncrement) {
+    //TODO make this configurable
+    final int autoInterval = 50;
+    if (autoHandle != null && !autoHandle.isCancelled()) {
+      stopAutoMode();
+    }
+
+    final Runnable autoUpdater = new Runnable() {
+      @Override
+      public void run() {
+        Log.v("metronome", "auto update!");
+
+        Activity a = (Activity)v.getContext();
+        a.runOnUiThread( new Runnable() {
+          @Override
+          public void run() {
+            if (isIncrement) tempo.getAndIncrement();
+            else tempo.getAndDecrement();
+            updateTempoView();
+          }
+        });
+      }
+    };
+
+    this.autoHandle = scheduler.scheduleAtFixedRate(autoUpdater, 0, autoInterval, TimeUnit.MILLISECONDS);
+  }
+
+  void stopAutoMode() {
+    Log.v("metronome", "auto stop! tempo:" + this.tempo.get());
+    if (autoHandle != null) {
+      autoHandle.cancel(true);
+    }
   }
 
   void restart(View v) {
@@ -152,6 +189,14 @@ public class Metronome {
 
   void updateTempoView() {
     this.tempoView.setText(this.tempo.get() + "");
+  }
+
+  void updateTempoView(int i) {
+    this.tempoView.setText(i + "");
+  }
+
+  void setTempo(int i) {
+    this.tempo.set(i);
   }
 }
 
