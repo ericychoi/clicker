@@ -8,6 +8,7 @@ import android.app.FragmentManager;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -138,7 +139,6 @@ public class ClickerMain extends Activity
         public boolean onTouch(View v, MotionEvent event) {
           if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
             metronome.stopAutoMode();
-            return true;
           }
           return false;
         }
@@ -159,6 +159,7 @@ public class ClickerMain extends Activity
       });
       upButton.setOnLongClickListener(new View.OnLongClickListener() {
         public boolean onLongClick(View v) {
+          Log.v("metronome", "longClick");
           metronome.startAutoMode(v, true);
           return false;
         }

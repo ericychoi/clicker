@@ -130,16 +130,21 @@ public class Metronome {
   }
 
   void increaseTempo(View v) {
-    Log.v("metronome", "update called");
+    if (this.isAutoRunning()) return; // don't increase again if auto incrementing
     this.tempo.getAndIncrement();
     if (this.isRunning()) restart(v);
     updateTempoView();
   }
 
   void decreaseTempo(View v) {
+    if (this.isAutoRunning()) return; // don't increase again if auto incrementing
     this.tempo.getAndDecrement();
     if (this.isRunning()) restart(v);
     updateTempoView();
+  }
+
+  boolean isAutoRunning() {
+    return this.autoHandle != null && !this.autoHandle.isCancelled();
   }
 
   // spins up a thread that auto-increments (or decrements) the tempo display
@@ -153,7 +158,7 @@ public class Metronome {
     final Runnable autoUpdater = new Runnable() {
       @Override
       public void run() {
-        Log.v("metronome", "auto update!");
+        //Log.v("metronome", "auto update!");
 
         Activity a = (Activity)v.getContext();
         a.runOnUiThread( new Runnable() {
