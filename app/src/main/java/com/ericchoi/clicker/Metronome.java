@@ -1,10 +1,7 @@
 package com.ericchoi.clicker;
 
 import android.app.Activity;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.media.SoundPool;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
@@ -67,7 +64,7 @@ public class Metronome {
     updateTempoView();
   }
 
-  void startMetronome(final View v) {
+  void start(final View v) {
     final AtomicInteger interval = new AtomicInteger(computeInterval()); // interval in ms
     Log.v("metronome", "starting with interval: " + interval.get());
 
@@ -75,7 +72,7 @@ public class Metronome {
     final Runnable clicker = new Runnable() {
       @Override
       public void run() {
-        Log.v("metronome", "click!");
+        //Log.v("metronome", "click!");
         final ImageView circle;
         final Animation circleAnimation;
         final Animation needleAnimation;
@@ -112,8 +109,8 @@ public class Metronome {
     this.clickerHandle = scheduler.scheduleAtFixedRate(clicker, 0, interval.get(), TimeUnit.MILLISECONDS);
   }
 
-  void stopMetronome(final View v) {
-    Log.v("metronome", "stop!");
+  void pause(final View v) {
+    Log.v("metronome", "pause!");
     if (clickerHandle != null) {
       clickerHandle.cancel(true);
     }
@@ -121,11 +118,11 @@ public class Metronome {
 
   void startOrStopMetronome(View v) {
     if (isRunning.getAndSet(false)) {
-      stopMetronome(v);
+      pause(v);
       isLeftsTurn.set(true);
     } else {
       isRunning.set(true);
-      startMetronome(v);
+      start(v);
     }
   }
 
@@ -183,8 +180,14 @@ public class Metronome {
   }
 
   void restart(View v) {
-    stopMetronome(v);
-    startMetronome(v);
+    pause(v);
+    start(v);
+  }
+
+  void stop() {
+    //TODO
+    Log.v("metronome", "stop called");
+    //scheduler.shutdown();
   }
 
   // computes timer interval in milliseconds from tempo (BPM)
@@ -203,5 +206,6 @@ public class Metronome {
   void setTempo(int i) {
     this.tempo.set(i);
   }
+
 }
 

@@ -115,6 +115,7 @@ public class ClickerMain extends Activity
      */
     private static final String ARG_SECTION_NUMBER = "section_number";
     private Metronome metronome;
+    private SoundPool clickSP;
 
     /**
      * Returns a new instance of this fragment for the given section
@@ -134,6 +135,7 @@ public class ClickerMain extends Activity
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+      Log.v("metronome", "frag onCreateView called");
       //TODO factor set up code out
       View.OnTouchListener buttonTouchListener = new View.OnTouchListener() {
         public boolean onTouch(View v, MotionEvent event) {
@@ -180,8 +182,7 @@ public class ClickerMain extends Activity
       });
       downButton.setOnTouchListener(buttonTouchListener);
 
-      //TODO fix a bug where auto update stop and clicking one more triggers auto update
-
+      //TODO fragment pause and resume cycle
       //TODO clean up on close
       //TODO clean up on resume
       //TODO deal with it you have a phone call coming
@@ -195,7 +196,8 @@ public class ClickerMain extends Activity
 
       // set up audio track
       //TODO make initial pool size a config value
-      SoundPool clickSP = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
+
+      clickSP = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
       int soundId = clickSP.load(rootView.getContext(), R.raw.click, 1);
 
       //TODO make initial tempo a configurable value
@@ -213,5 +215,25 @@ public class ClickerMain extends Activity
               getArguments().getInt(ARG_SECTION_NUMBER));
     }
 
+    @Override
+    public void onPause() {
+      super.onPause();
+      Log.v("metronome", "frag paused called");
+      //metronome.stop();
+      //clickSP.release();
+    }
+
+    @Override
+    public void onResume() {
+      Log.v("metronome", "frag on resume called");
+      super.onResume();
+    }
+
+    @Override
+    public void onDestroyView() {
+      Log.v("metronome", "frag on destroy view called");
+      super.onDestroyView();
+
+    }
   }
 }
