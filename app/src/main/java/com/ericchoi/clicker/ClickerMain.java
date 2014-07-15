@@ -150,7 +150,7 @@ public class ClickerMain extends Activity
       final Button startButton = (Button) rootView.findViewById(R.id.start_button);
       startButton.setOnClickListener(new View.OnClickListener() {
         public void onClick(View v) {
-          metronome.startOrStopMetronome(v);
+          metronome.startOrPause(v);
         }
       });
       final Button upButton = (Button) rootView.findViewById(R.id.up_button);
@@ -182,10 +182,18 @@ public class ClickerMain extends Activity
       });
       downButton.setOnTouchListener(buttonTouchListener);
 
-      //TODO fragment pause and resume cycle
-      //TODO clean up on close
-      //TODO clean up on resume
-      //TODO deal with it you have a phone call coming
+      final Button beatButton = (Button) rootView.findViewById(R.id.beat_button);
+      beatButton.setOnClickListener(new View.OnClickListener() {
+        public void onClick(View v) {
+          metronome.toggleBeat(v);
+        }
+      });
+
+      //TODO handle landscape
+      //TODO create a separate label for beats per measure (clickable) and change it on on click
+      //TODO beat manual counter (separate activity)
+      //TODO sticking exercise (separate activity)
+      //TODO on pause make it clickable (and change it on click)
       //TODO update text on start stop button
 
       ImageView leftCircle = (ImageView) rootView.findViewById(R.id.metronome_circle_left);
@@ -196,14 +204,18 @@ public class ClickerMain extends Activity
 
       // set up audio track
       //TODO make initial pool size a config value
-
       clickSP = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
-      int soundId = clickSP.load(rootView.getContext(), R.raw.click, 1);
+      int clickSid = clickSP.load(rootView.getContext(), R.raw.click, 1);
+      int loudClickSid = clickSP.load(rootView.getContext(), R.raw.loud, 1);
 
       //TODO make initial tempo a configurable value
       int initialTempo = 100;
+      int initialBPM = 4;
       TextView tempoView = (TextView) rootView.findViewById(R.id.tempo);
-      this.metronome = new Metronome(leftCircle, rightCircle, needle, clickSP, soundId, initialTempo, tempoView);
+      TextView BPMView = (TextView) rootView.findViewById(R.id.beat_counter);
+      TextView BPMLabelView = (TextView) rootView.findViewById(R.id.beat_label);
+      this.metronome = new Metronome(leftCircle, rightCircle, needle, clickSP, loudClickSid,
+        clickSid, initialTempo, tempoView, initialBPM, BPMView, BPMLabelView);
 
       return rootView;
     }
@@ -219,8 +231,7 @@ public class ClickerMain extends Activity
     public void onPause() {
       super.onPause();
       Log.v("metronome", "frag paused called");
-      //metronome.stop();
-      //clickSP.release();
+      metronome.pause();
     }
 
     @Override
@@ -233,7 +244,7 @@ public class ClickerMain extends Activity
     public void onDestroyView() {
       Log.v("metronome", "frag on destroy view called");
       super.onDestroyView();
-
+      clickSP.release();
     }
   }
 }

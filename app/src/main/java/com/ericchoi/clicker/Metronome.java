@@ -30,20 +30,26 @@ public class Metronome {
   private Animation needleTurnL;
 
   private int clickSoundId;
+  private int loudClickSid;
   private SoundPool clickSoundPool;
 
   final private AtomicBoolean isRunning;
-  final private AtomicBoolean isLeftsTurn;
+  final private AtomicInteger beatCounter;
 
   final private AtomicInteger tempo;
   final private TextView tempoView;
+
+  final private AtomicInteger beatsPerMeasure;
+  final private TextView BPMView;
+  final private TextView BPMLabelView;
 
   public boolean isRunning() {
     return isRunning.get();
   }
 
   public Metronome(ImageView leftCircle, ImageView rightCircle, ImageView needle, SoundPool sp,
-                   int clickSoundId, int initialTempo, TextView tempoView) {
+                   int loudClickSid, int clickSid, int initialTempo, TextView tempoView,
+                   int bpm, TextView BPMView, TextView BPMLabelView) {
     this.leftCircle = leftCircle;
     this.leftCircleFadeOut = AnimationUtils.loadAnimation(leftCircle.getContext(), R.anim.circle_fade_out);
     this.rightCircle = rightCircle;
@@ -54,14 +60,20 @@ public class Metronome {
     this.needleTurnL = AnimationUtils.loadAnimation(needle.getContext(), R.anim.needle_rotate_reverse);
 
     this.clickSoundPool = sp;
-    this.clickSoundId = clickSoundId;
+    this.clickSoundId = clickSid;
+    this.loudClickSid = loudClickSid;
 
-    isLeftsTurn = new AtomicBoolean(true);
+    beatCounter = new AtomicInteger(0);
     isRunning = new AtomicBoolean(false);
 
     tempo = new AtomicInteger(initialTempo);
     this.tempoView = tempoView;
     updateTempoView();
+
+    beatsPerMeasure = new AtomicInteger(bpm);
+    this.BPMView = BPMView;
+    this.BPMLabelView = BPMLabelView;
+    updateBPMView();
   }
 
   void start(final View v) {
@@ -72,24 +84,26 @@ public class Metronome {
     final Runnable clicker = new Runnable() {
       @Override
       public void run() {
-        //Log.v("metronome", "click!");
         final ImageView circle;
         final Animation circleAnimation;
         final Animation needleAnimation;
+        final boolean isBeginning;
+        final int beat;
 
-        synchronized (isLeftsTurn) {
-          if (isLeftsTurn.get()) {
+        synchronized (beatCounter) {
+          beat = beatCounter.getAndIncrement();
+          isBeginning = beat == 0;
+          if (beat % 2 == 0) {
             circle = leftCircle;
             circleAnimation = leftCircleFadeOut;
             needleAnimation = needleTurnR;
-            isLeftsTurn.set(false);
           }
           else {
             circle = rightCircle;
             circleAnimation = rightCircleFadeOut;
             needleAnimation = needleTurnL;
-            isLeftsTurn.set(true);
           }
+          if (beat == beatsPerMeasure.get() - 1) beatCounter.set(0);
         }
         Activity a = (Activity)v.getContext();
         a.runOnUiThread( new Runnable() {
@@ -100,26 +114,28 @@ public class Metronome {
             circle.startAnimation(circleAnimation);
             needleAnimation.setDuration(interval.get());
             needle.startAnimation(needleAnimation);
-            clickSoundPool.play(clickSoundId, 1.0f, 1.0f, 1, 0, 1.0f);
-            }
-        });
+            if (isBeginning) clickSoundPool.play(loudClickSid, 1.0f, 1.0f, 1, 0, 1.0f);
+            else clickSoundPool.play(clickSoundId, 1.0f, 1.0f, 1, 0, 1.0f);
+            updateBPMView(beat + 1);
+          }});
       }
     };
-
+    setBPMLabel(false);
     this.clickerHandle = scheduler.scheduleAtFixedRate(clicker, 0, interval.get(), TimeUnit.MILLISECONDS);
   }
 
-  void pause(final View v) {
+  void pause() {
     Log.v("metronome", "pause!");
-    if (clickerHandle != null) {
-      clickerHandle.cancel(true);
-    }
+    if (clickerHandle != null) clickerHandle.cancel(true);
+    stopAutoMode();
+    updateBPMView();
+    setBPMLabel(true);
   }
 
-  void startOrStopMetronome(View v) {
+  void startOrPause(View v) {
     if (isRunning.getAndSet(false)) {
-      pause(v);
-      isLeftsTurn.set(true);
+      pause();
+      beatCounter.set(0);
     } else {
       isRunning.set(true);
       start(v);
@@ -155,8 +171,6 @@ public class Metronome {
     final Runnable autoUpdater = new Runnable() {
       @Override
       public void run() {
-        //Log.v("metronome", "auto update!");
-
         Activity a = (Activity)v.getContext();
         a.runOnUiThread( new Runnable() {
           @Override
@@ -174,20 +188,12 @@ public class Metronome {
 
   void stopAutoMode() {
     Log.v("metronome", "auto stop! tempo:" + this.tempo.get());
-    if (autoHandle != null) {
-      autoHandle.cancel(true);
-    }
+    if (autoHandle != null) autoHandle.cancel(true);
   }
 
   void restart(View v) {
-    pause(v);
+    pause();
     start(v);
-  }
-
-  void stop() {
-    //TODO
-    Log.v("metronome", "stop called");
-    //scheduler.shutdown();
   }
 
   // computes timer interval in milliseconds from tempo (BPM)
@@ -205,6 +211,26 @@ public class Metronome {
 
   void setTempo(int i) {
     this.tempo.set(i);
+  }
+
+  void updateBPMView() {
+    this.BPMView.setText(this.beatsPerMeasure.get() + "");
+  }
+
+  void updateBPMView(int i) {
+    this.BPMView.setText(i + "");
+  }
+
+  void setBPMLabel(boolean isBPM) {
+    if (isBPM) BPMLabelView.setText(R.string.BPM);
+    else BPMLabelView.setText(R.string.beat);
+  }
+
+  void toggleBeat(View v) {
+    pause();
+    if (beatsPerMeasure.incrementAndGet() > 8) beatsPerMeasure.set(2);
+    updateBPMView();
+    Log.v("metronome", "current bpm: " + beatsPerMeasure.get());
   }
 
 }
