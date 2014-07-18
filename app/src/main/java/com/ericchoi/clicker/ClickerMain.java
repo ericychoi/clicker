@@ -189,7 +189,8 @@ public class ClickerMain extends Activity
         }
       });
 
-      //TODO handle landscape
+
+      //TODO on rotation keep the metronome running
       //TODO create a separate label for beats per measure (clickable) and change it on on click
       //TODO beat manual counter (separate activity)
       //TODO sticking exercise (separate activity)
