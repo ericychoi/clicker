@@ -189,14 +189,6 @@ public class ClickerMain extends Activity
         }
       });
 
-
-      //TODO on rotation keep the metronome running
-      //TODO create a separate label for beats per measure (clickable) and change it on on click
-      //TODO beat manual counter (separate activity)
-      //TODO sticking exercise (separate activity)
-      //TODO on pause make it clickable (and change it on click)
-      //TODO update text on start stop button
-
       ImageView leftCircle = (ImageView) rootView.findViewById(R.id.metronome_circle_left);
       ImageView rightCircle = (ImageView) rootView.findViewById(R.id.metronome_circle_right);
       leftCircle.setAlpha (0.0f);
