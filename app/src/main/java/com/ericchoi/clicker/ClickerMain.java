@@ -8,6 +8,7 @@ import android.app.FragmentManager;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -116,6 +117,7 @@ public class ClickerMain extends Activity
     private static final String ARG_SECTION_NUMBER = "section_number";
     private Metronome metronome;
     private SoundPool clickSP;
+    private long countLastClicked = 0;
 
     /**
      * Returns a new instance of this fragment for the given section
@@ -137,6 +139,12 @@ public class ClickerMain extends Activity
                              Bundle savedInstanceState) {
       Log.v("metronome", "frag onCreateView called");
       //TODO factor set up code out
+      final View rootView = inflater.inflate(R.layout.fragment_clicker_main, container, false);
+      initView(rootView);
+      return rootView;
+    }
+
+    private void initView(final View rootView) {
       View.OnTouchListener buttonTouchListener = new View.OnTouchListener() {
         public boolean onTouch(View v, MotionEvent event) {
           if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
@@ -146,13 +154,14 @@ public class ClickerMain extends Activity
         }
       };
 
-      final View rootView = inflater.inflate(R.layout.fragment_clicker_main, container, false);
+      // buttons
       final Button startButton = (Button) rootView.findViewById(R.id.start_button);
       startButton.setOnClickListener(new View.OnClickListener() {
         public void onClick(View v) {
           metronome.startOrPause(v);
         }
       });
+
       final Button upButton = (Button) rootView.findViewById(R.id.up_button);
       upButton.setOnClickListener(new View.OnClickListener() {
         public void onClick(View v) {
@@ -189,6 +198,19 @@ public class ClickerMain extends Activity
         }
       });
 
+      final Button countButton = (Button) rootView.findViewById(R.id.count_button);
+      countButton.setOnClickListener(new View.OnClickListener() {
+        public void onClick(View v) {
+          if (countLastClicked != 0) {
+            long interval = SystemClock.elapsedRealtime() - countLastClicked;
+            Log.v("metronome", "interval: " + interval);
+            metronome.updateTempoTo(v, (int) (1000L * 60L / interval));
+          }
+          countLastClicked = SystemClock.elapsedRealtime();
+        }
+      });
+
+      // graphics
       ImageView leftCircle = (ImageView) rootView.findViewById(R.id.metronome_circle_left);
       ImageView rightCircle = (ImageView) rootView.findViewById(R.id.metronome_circle_right);
       leftCircle.setAlpha (0.0f);
@@ -207,10 +229,10 @@ public class ClickerMain extends Activity
       TextView tempoView = (TextView) rootView.findViewById(R.id.tempo);
       TextView BPMView = (TextView) rootView.findViewById(R.id.beat_counter);
       TextView BPMLabelView = (TextView) rootView.findViewById(R.id.beat_label);
+
+      // setup Metronome
       this.metronome = new Metronome(leftCircle, rightCircle, needle, clickSP, loudClickSid,
         clickSid, initialTempo, tempoView, initialBPM, BPMView, BPMLabelView);
-
-      return rootView;
     }
 
     @Override

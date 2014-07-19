@@ -111,11 +111,12 @@
                 <Button android:text="DOWN" android:id="@+id/down_button" android:layout_width="fill_parent" android:layout_height="fill_parent" android:layout_weight="1"/>
             </LinearLayout>
             <Button android:text="BEATS" android:id="@+id/beat_button" android:layout_width="fill_parent" android:layout_height="50dp" />
+            <Button android:text="COUNT" android:id="@+id/count_button" android:layout_width="fill_parent" android:layout_height="50dp" />
             <Button android:text="START" android:id="@+id/start_button" android:layout_width="fill_parent" android:layout_height="50dp" android:layout_alignParentBottom="true"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="2"/>
+            android:layout_weight="3"/>
     </LinearLayout>
 </RelativeLayout>

@@ -156,6 +156,13 @@ public class Metronome {
     updateTempoView();
   }
 
+  void updateTempoTo(View v, int tempo) {
+    if (this.isAutoRunning()) stopAutoMode();
+    setTempo(tempo);
+    if (this.isRunning()) pause();
+    updateTempoView();
+  }
+
   boolean isAutoRunning() {
     return this.autoHandle != null && !this.autoHandle.isCancelled();
   }
