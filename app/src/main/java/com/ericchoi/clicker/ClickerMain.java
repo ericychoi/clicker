@@ -34,6 +34,9 @@ public class ClickerMain extends Activity
    */
   private CharSequence mTitle;
 
+  private Metronome metronome;
+  private SoundPool clickSP;
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -55,7 +58,7 @@ public class ClickerMain extends Activity
     // update the main content by replacing fragments
     FragmentManager fragmentManager = getFragmentManager();
     fragmentManager.beginTransaction()
-            .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
+            .replace(R.id.container, MetronomeFragment.newInstance(position + 1))
             .commit();
   }
 
@@ -100,38 +103,49 @@ public class ClickerMain extends Activity
     // automatically handle clicks on the Home/Up button, so long
     // as you specify a parent activity in AndroidManifest.xml.
     int id = item.getItemId();
+
+    if (id == R.id.play_action) {
+      Log.v("metronome", "play action pressed");
+      metronome.startOrPause(this.getCurrentFocus());
+    }
+
     if (id == R.id.action_settings) {
       return true;
     }
     return super.onOptionsItemSelected(item);
   }
 
+  public Metronome getMetronome() {
+    return metronome;
+  }
+
   /**
    * A placeholder fragment containing a simple view.
    */
-  public static class PlaceholderFragment extends Fragment {
+  public static class MetronomeFragment extends Fragment {
     /**
      * The fragment argument representing the section number for this
      * fragment.
      */
     private static final String ARG_SECTION_NUMBER = "section_number";
+
     private Metronome metronome;
-    private SoundPool clickSP;
     private long countLastClicked = 0;
 
     /**
      * Returns a new instance of this fragment for the given section
      * number.
      */
-    public static PlaceholderFragment newInstance(int sectionNumber) {
-      PlaceholderFragment fragment = new PlaceholderFragment();
+    public static MetronomeFragment newInstance(int sectionNumber) {
+      MetronomeFragment fragment = new MetronomeFragment();
       Bundle args = new Bundle();
       args.putInt(ARG_SECTION_NUMBER, sectionNumber);
       fragment.setArguments(args);
       return fragment;
     }
 
-    public PlaceholderFragment() {
+    public MetronomeFragment() {
+      metronome = ((ClickerMain)getActivity()).getMetronome();
     }
 
     @Override
