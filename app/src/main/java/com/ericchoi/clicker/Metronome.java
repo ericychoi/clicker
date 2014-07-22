@@ -3,6 +3,7 @@ package com.ericchoi.clicker;
 import android.app.Activity;
 import android.media.SoundPool;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -29,19 +30,23 @@ public class Metronome {
   private Animation needleTurnR;
   private Animation needleTurnL;
 
+  private MenuItem playMenuItem;
+
   private int clickSoundId;
   private int loudClickSid;
   private SoundPool clickSoundPool;
 
-  final private AtomicBoolean isRunning;
-  final private AtomicInteger beatCounter;
+  final private AtomicBoolean isRunning = new AtomicBoolean(false);
+  final private AtomicInteger beatCounter = new AtomicInteger(0);
 
-  final private AtomicInteger tempo;
-  final private TextView tempoView;
+  //TODO make initial value configurable
+  final private AtomicInteger tempo = new AtomicInteger(100);
+  private TextView tempoView;
 
-  final private AtomicInteger beatsPerMeasure;
-  final private TextView BPMView;
-  final private TextView BPMLabelView;
+  //TODO make initial value configurable
+  final private AtomicInteger beatsPerMeasure = new AtomicInteger(4);
+  private TextView BPMView;
+  private TextView BPMLabelView;
 
   public boolean isRunning() {
     return isRunning.get();
@@ -63,16 +68,26 @@ public class Metronome {
     this.clickSoundId = clickSid;
     this.loudClickSid = loudClickSid;
 
-    beatCounter = new AtomicInteger(0);
-    isRunning = new AtomicBoolean(false);
-
-    tempo = new AtomicInteger(initialTempo);
     this.tempoView = tempoView;
     updateTempoView();
 
-    beatsPerMeasure = new AtomicInteger(bpm);
     this.BPMView = BPMView;
     this.BPMLabelView = BPMLabelView;
+    updateBPMView();
+  }
+
+  public Metronome(SoundPool clickSoundPool, int clickSoundId, int loudClickSid) {
+    this.clickSoundPool = clickSoundPool;
+    this.clickSoundId = clickSoundId;
+    this.loudClickSid = loudClickSid;
+  }
+
+  void initView() {
+    this.leftCircleFadeOut = AnimationUtils.loadAnimation(leftCircle.getContext(), R.anim.circle_fade_out);
+    this.rightCircleFadeOut = AnimationUtils.loadAnimation(rightCircle.getContext(), R.anim.circle_fade_out);
+    this.needleTurnR = AnimationUtils.loadAnimation(needle.getContext(), R.anim.needle_rotate);
+    this.needleTurnL = AnimationUtils.loadAnimation(needle.getContext(), R.anim.needle_rotate_reverse);
+    updateTempoView();
     updateBPMView();
   }
 
@@ -117,6 +132,7 @@ public class Metronome {
             if (isBeginning) clickSoundPool.play(loudClickSid, 1.0f, 1.0f, 1, 0, 1.0f);
             else clickSoundPool.play(clickSoundId, 1.0f, 1.0f, 1, 0, 1.0f);
             updateBPMView(beat + 1);
+            playMenuItem.setIcon(R.drawable.ic_action_pause);
           }});
       }
     };
@@ -130,15 +146,19 @@ public class Metronome {
     stopAutoMode();
     updateBPMView();
     setBPMLabel(true);
+    playMenuItem.setIcon(R.drawable.ic_action_play);
   }
 
-  void startOrPause(View v) {
+  /* return true if started.  else false */
+  boolean startOrPause(View v) {
     if (isRunning.getAndSet(false)) {
       pause();
       beatCounter.set(0);
+      return false;
     } else {
       isRunning.set(true);
       start(v);
+      return true;
     }
   }
 
@@ -240,5 +260,48 @@ public class Metronome {
     Log.v("metronome", "current bpm: " + beatsPerMeasure.get());
   }
 
+  public void setLeftCircle(ImageView leftCircle) {
+    this.leftCircle = leftCircle;
+  }
+
+  public void setLeftCircleFadeOut(Animation leftCircleFadeOut) {
+    this.leftCircleFadeOut = leftCircleFadeOut;
+  }
+
+  public void setRightCircle(ImageView rightCircle) {
+    this.rightCircle = rightCircle;
+  }
+
+  public void setRightCircleFadeOut(Animation rightCircleFadeOut) {
+    this.rightCircleFadeOut = rightCircleFadeOut;
+  }
+
+  public void setNeedle(ImageView needle) {
+    this.needle = needle;
+  }
+
+  public void setNeedleTurnR(Animation needleTurnR) {
+    this.needleTurnR = needleTurnR;
+  }
+
+  public void setNeedleTurnL(Animation needleTurnL) {
+    this.needleTurnL = needleTurnL;
+  }
+
+  public void setTempoView(TextView tempoView) {
+    this.tempoView = tempoView;
+  }
+
+  public void setBPMLabelView(TextView BPMLabelView) {
+    this.BPMLabelView = BPMLabelView;
+  }
+
+  public void setBPMView(TextView BPMView) {
+    this.BPMView = BPMView;
+  }
+
+  public void setPlayMenuItem(MenuItem playMenuItem) {
+    this.playMenuItem = playMenuItem;
+  }
 }
 

@@ -39,6 +39,7 @@ public class ClickerMain extends Activity
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
+    Log.v("metronome", "onCreate()");
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_clicker_main);
 
@@ -51,6 +52,13 @@ public class ClickerMain extends Activity
             R.id.navigation_drawer,
             (DrawerLayout) findViewById(R.id.drawer_layout));
 
+    // set up audio track
+    //TODO make initial pool size a config value
+    clickSP = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
+    int clickSid = clickSP.load(getApplicationContext(), R.raw.click, 1);
+    int loudClickSid = clickSP.load(getApplicationContext(), R.raw.loud, 1);
+
+    this.metronome = new Metronome(clickSP, clickSid, loudClickSid);
   }
 
   @Override
@@ -91,6 +99,12 @@ public class ClickerMain extends Activity
       // if the drawer is not showing. Otherwise, let the drawer
       // decide what to show in the action bar.
       getMenuInflater().inflate(R.menu.clicker_main, menu);
+      for (int i = 0; i < menu.size(); i++) {
+        MenuItem mi = menu.getItem(i);
+        if (mi.getItemId() == R.id.play_action) {
+          metronome.setPlayMenuItem(mi);
+        }
+      }
       restoreActionBar();
       return true;
     }
@@ -107,6 +121,9 @@ public class ClickerMain extends Activity
     if (id == R.id.play_action) {
       Log.v("metronome", "play action pressed");
       metronome.startOrPause(this.getCurrentFocus());
+        /*
+      if (metronome.startOrPause(this.getCurrentFocus()) item.setIcon(R.drawable.ic_action_pause);
+      else item.setIcon(R.drawable.ic_action_play);*/
     }
 
     if (id == R.id.action_settings) {
@@ -119,6 +136,12 @@ public class ClickerMain extends Activity
     return metronome;
   }
 
+  @Override
+  protected void onStop() {
+    super.onStop();
+    clickSP.release();
+  }
+
   /**
    * A placeholder fragment containing a simple view.
    */
@@ -129,7 +152,6 @@ public class ClickerMain extends Activity
      */
     private static final String ARG_SECTION_NUMBER = "section_number";
 
-    private Metronome metronome;
     private long countLastClicked = 0;
 
     /**
@@ -144,9 +166,7 @@ public class ClickerMain extends Activity
       return fragment;
     }
 
-    public MetronomeFragment() {
-      metronome = ((ClickerMain)getActivity()).getMetronome();
-    }
+    public MetronomeFragment() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -159,6 +179,9 @@ public class ClickerMain extends Activity
     }
 
     private void initView(final View rootView) {
+      ClickerMain clickerActivity = (ClickerMain)getActivity();
+      final Metronome metronome = clickerActivity.getMetronome();
+
       View.OnTouchListener buttonTouchListener = new View.OnTouchListener() {
         public boolean onTouch(View v, MotionEvent event) {
           if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
@@ -224,29 +247,25 @@ public class ClickerMain extends Activity
         }
       });
 
-      // graphics
+      // setup Metronome
       ImageView leftCircle = (ImageView) rootView.findViewById(R.id.metronome_circle_left);
       ImageView rightCircle = (ImageView) rootView.findViewById(R.id.metronome_circle_right);
       leftCircle.setAlpha (0.0f);
       rightCircle.setAlpha(0.0f);
       ImageView needle = (ImageView) rootView.findViewById(R.id.metronome_needle);
 
-      // set up audio track
-      //TODO make initial pool size a config value
-      clickSP = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
-      int clickSid = clickSP.load(rootView.getContext(), R.raw.click, 1);
-      int loudClickSid = clickSP.load(rootView.getContext(), R.raw.loud, 1);
-
-      //TODO make initial tempo a configurable value
-      int initialTempo = 100;
-      int initialBPM = 4;
       TextView tempoView = (TextView) rootView.findViewById(R.id.tempo);
       TextView BPMView = (TextView) rootView.findViewById(R.id.beat_counter);
       TextView BPMLabelView = (TextView) rootView.findViewById(R.id.beat_label);
 
-      // setup Metronome
-      this.metronome = new Metronome(leftCircle, rightCircle, needle, clickSP, loudClickSid,
-        clickSid, initialTempo, tempoView, initialBPM, BPMView, BPMLabelView);
+      metronome.setLeftCircle(leftCircle);
+      metronome.setRightCircle(rightCircle);
+      metronome.setNeedle(needle);
+      metronome.setTempoView(tempoView);
+      metronome.setBPMView(BPMView);
+      metronome.setBPMLabelView(BPMLabelView);
+
+      metronome.initView();
     }
 
     @Override
@@ -260,7 +279,8 @@ public class ClickerMain extends Activity
     public void onPause() {
       super.onPause();
       Log.v("metronome", "frag paused called");
-      metronome.pause();
+      ClickerMain clickerActivity = (ClickerMain)getActivity();
+      final Metronome metronome = clickerActivity.getMetronome();
     }
 
     @Override
@@ -273,7 +293,6 @@ public class ClickerMain extends Activity
     public void onDestroyView() {
       Log.v("metronome", "frag on destroy view called");
       super.onDestroyView();
-      clickSP.release();
     }
   }
 }
