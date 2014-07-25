@@ -82,7 +82,7 @@ public class Metronome {
     this.loudClickSid = loudClickSid;
   }
 
-  void initView() {
+  public void initView() {
     this.leftCircleFadeOut = AnimationUtils.loadAnimation(leftCircle.getContext(), R.anim.circle_fade_out);
     this.rightCircleFadeOut = AnimationUtils.loadAnimation(rightCircle.getContext(), R.anim.circle_fade_out);
     this.needleTurnR = AnimationUtils.loadAnimation(needle.getContext(), R.anim.needle_rotate);
@@ -140,7 +140,7 @@ public class Metronome {
     this.clickerHandle = scheduler.scheduleAtFixedRate(clicker, 0, interval.get(), TimeUnit.MILLISECONDS);
   }
 
-  void pause() {
+  public void pause() {
     Log.v("metronome", "pause!");
     if (clickerHandle != null) clickerHandle.cancel(true);
     stopAutoMode();
@@ -150,7 +150,7 @@ public class Metronome {
   }
 
   /* return true if started.  else false */
-  boolean startOrPause(View v) {
+  public boolean startOrPause(View v) {
     if (isRunning.getAndSet(false)) {
       pause();
       beatCounter.set(0);
@@ -162,33 +162,33 @@ public class Metronome {
     }
   }
 
-  void increaseTempo(View v) {
+  public void increaseTempo(View v) {
     if (this.isAutoRunning()) return; // don't increase again if auto incrementing
     this.tempo.getAndIncrement();
     if (this.isRunning()) restart(v);
     updateTempoView();
   }
 
-  void decreaseTempo(View v) {
+  public void decreaseTempo(View v) {
     if (this.isAutoRunning()) return; // don't increase again if auto incrementing
     this.tempo.getAndDecrement();
     if (this.isRunning()) restart(v);
     updateTempoView();
   }
 
-  void updateTempoTo(View v, int tempo) {
+  public void updateTempoTo(View v, int tempo) {
     if (this.isAutoRunning()) stopAutoMode();
     setTempo(tempo);
     if (this.isRunning()) pause();
     updateTempoView();
   }
 
-  boolean isAutoRunning() {
+  public boolean isAutoRunning() {
     return this.autoHandle != null && !this.autoHandle.isCancelled();
   }
 
   // spins up a thread that auto-increments (or decrements) the tempo display
-  void startAutoMode(final View v, final boolean isIncrement) {
+  public void startAutoMode(final View v, final boolean isIncrement) {
     //TODO make this configurable
     final int autoInterval = 50;
     if (autoHandle != null && !autoHandle.isCancelled()) {
@@ -213,12 +213,12 @@ public class Metronome {
     this.autoHandle = scheduler.scheduleAtFixedRate(autoUpdater, 0, autoInterval, TimeUnit.MILLISECONDS);
   }
 
-  void stopAutoMode() {
+  public void stopAutoMode() {
     Log.v("metronome", "auto stop! tempo:" + this.tempo.get());
     if (autoHandle != null) autoHandle.cancel(true);
   }
 
-  void restart(View v) {
+  public void restart(View v) {
     pause();
     start(v);
   }
@@ -253,7 +253,7 @@ public class Metronome {
     else BPMLabelView.setText(R.string.beat);
   }
 
-  void toggleBeat(View v) {
+  public void toggleBeat(View v) {
     pause();
     if (beatsPerMeasure.incrementAndGet() > 8) beatsPerMeasure.set(2);
     updateBPMView();
