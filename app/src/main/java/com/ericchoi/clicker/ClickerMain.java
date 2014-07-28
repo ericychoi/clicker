@@ -3,6 +3,7 @@ package com.ericchoi.clicker;
 import android.app.Activity;
 
 import android.app.ActionBar;
+import android.app.Fragment;
 import android.app.FragmentManager;
 import android.media.AudioManager;
 import android.media.SoundPool;
@@ -13,6 +14,7 @@ import android.view.MenuItem;
 import android.support.v4.widget.DrawerLayout;
 
 import com.ericchoi.clicker.fragment.MetronomeFragment;
+import com.ericchoi.clicker.fragment.MiniMetronomeFragment;
 
 public class ClickerMain extends Activity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -56,10 +58,21 @@ public class ClickerMain extends Activity
 
   @Override
   public void onNavigationDrawerItemSelected(int position) {
+    Log.v("metronome", "navi item pressed:" + position);
     // update the main content by replacing fragments
     FragmentManager fragmentManager = getFragmentManager();
+    Fragment frag;
+
+    if (position == 1) {
+      Log.v("metronome", "here:" + position);
+      frag = MiniMetronomeFragment.newInstance(position + 1);
+    }
+    else {
+      frag = MetronomeFragment.newInstance(position + 1);
+    }
+
     fragmentManager.beginTransaction()
-            .replace(R.id.container, MetronomeFragment.newInstance(position + 1))
+            .replace(R.id.container, frag)
             .commit();
   }
 

@@ -53,7 +53,7 @@ public class MetronomeFragment extends Fragment {
     return rootView;
   }
 
-  private void initView(final View rootView) {
+  protected void initView(final View rootView) {
     ClickerMain clickerActivity = (ClickerMain)getActivity();
     final Metronome metronome = clickerActivity.getMetronome();
 
