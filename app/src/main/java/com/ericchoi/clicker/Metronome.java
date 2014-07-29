@@ -31,6 +31,7 @@ public class Metronome {
   private Animation needleTurnL;
 
   private MenuItem playMenuItem;
+  private MenuItem tempoMenuItem;
 
   private int clickSoundId;
   private int loudClickSid;
@@ -232,6 +233,10 @@ public class Metronome {
     this.tempoView.setText(this.tempo.get() + "");
   }
 
+  public void updateTempoMenuItem() {
+    tempoMenuItem.setTitle(tempo.get() + "");
+  }
+
   void updateTempoView(int i) {
     this.tempoView.setText(i + "");
   }
@@ -303,5 +308,7 @@ public class Metronome {
   public void setPlayMenuItem(MenuItem playMenuItem) {
     this.playMenuItem = playMenuItem;
   }
+
+  public void setTempoMenuItem(MenuItem tempoMenuItem) { this.tempoMenuItem = tempoMenuItem; }
 }
 

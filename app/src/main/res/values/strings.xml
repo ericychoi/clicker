@@ -9,7 +9,10 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+    <string name="action_increase">Up</string>
+    <string name="action_decrease">Down</string>
     <string name="action_play">Play</string>
+    <string name="action_tempo">Tempo</string>
 
     <string name="beat">Beat</string>
     <string name="BPM">Beats Per Measure</string>

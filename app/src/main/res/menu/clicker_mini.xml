@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/action_increase"
+          android:icon="@drawable/ic_action_collapse"
+          android:title="@string/action_increase"
+          android:showAsAction="always" />
+    <item android:id="@+id/action_tempo"
+          android:title="@string/action_tempo"
+          android:showAsAction="always|withText" />
+    <item android:id="@+id/action_decrease"
+          android:icon="@drawable/ic_action_expand"
+          android:title="@string/action_decrease"
+          android:showAsAction="always" />
+</menu>

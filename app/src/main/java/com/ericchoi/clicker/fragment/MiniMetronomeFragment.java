@@ -3,9 +3,14 @@ package com.ericchoi.clicker.fragment;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.ericchoi.clicker.ClickerMain;
+import com.ericchoi.clicker.Metronome;
 import com.ericchoi.clicker.R;
 
 /**
@@ -17,6 +22,20 @@ public class MiniMetronomeFragment extends MetronomeFragment {
 
   public MiniMetronomeFragment() {
     Log.v("metronome", "mini metronome called");
+  }
+
+  @Override
+  public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    inflater.inflate(R.menu.clicker_mini, menu);
+    Metronome m = ((ClickerMain) getActivity()).getMetronome();
+    for (int i = 0; i < menu.size(); i++) {
+      MenuItem mi = menu.getItem(i);
+      if (mi.getItemId() == R.id.action_tempo) {
+        m.setTempoMenuItem(mi);
+      }
+    }
+    m.updateTempoMenuItem();
+    super.onCreateOptionsMenu(menu, inflater);
   }
 
   @Override

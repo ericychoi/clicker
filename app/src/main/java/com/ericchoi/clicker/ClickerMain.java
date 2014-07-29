@@ -104,13 +104,6 @@ public class ClickerMain extends Activity
       // Only show items in the action bar relevant to this screen
       // if the drawer is not showing. Otherwise, let the drawer
       // decide what to show in the action bar.
-      getMenuInflater().inflate(R.menu.clicker_main, menu);
-      for (int i = 0; i < menu.size(); i++) {
-        MenuItem mi = menu.getItem(i);
-        if (mi.getItemId() == R.id.action_play) {
-          metronome.setPlayMenuItem(mi);
-        }
-      }
       restoreActionBar();
       return true;
     }

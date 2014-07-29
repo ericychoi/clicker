@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,6 +47,12 @@ public class MetronomeFragment extends Fragment {
   public MetronomeFragment() {}
 
   @Override
+  public void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setHasOptionsMenu(true);
+  }
+
+  @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
                            Bundle savedInstanceState) {
     Log.v("metronome", "frag onCreateView called");
@@ -51,6 +60,18 @@ public class MetronomeFragment extends Fragment {
     final View rootView = inflater.inflate(R.layout.fragment_clicker_main, container, false);
     initView(rootView);
     return rootView;
+  }
+
+  @Override
+  public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    super.onCreateOptionsMenu(menu, inflater);
+    inflater.inflate(R.menu.clicker_main, menu);
+    for (int i = 0; i < menu.size(); i++) {
+      MenuItem mi = menu.getItem(i);
+      if (mi.getItemId() == R.id.action_play) {
+        ((ClickerMain)getActivity()).getMetronome().setPlayMenuItem(mi);
+      }
+    }
   }
 
   protected void initView(final View rootView) {
