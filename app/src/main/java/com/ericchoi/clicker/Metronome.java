@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.media.SoundPool;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -310,5 +312,49 @@ public class Metronome {
   }
 
   public void setTempoMenuItem(MenuItem tempoMenuItem) { this.tempoMenuItem = tempoMenuItem; }
+
+  public void setBasicButtons(Button startButton, Button upButton, Button downButton) {
+    View.OnTouchListener buttonTouchListener = new View.OnTouchListener() {
+      public boolean onTouch(View v, MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
+          stopAutoMode();
+        }
+        return false;
+      }
+    };
+    startButton.setOnClickListener(new View.OnClickListener() {
+      public void onClick(View v) {
+        startOrPause(v);
+      }
+    });
+
+    upButton.setOnClickListener(new View.OnClickListener() {
+      public void onClick(View v) {
+        increaseTempo(v);
+      }
+    });
+    upButton.setOnLongClickListener(new View.OnLongClickListener() {
+      public boolean onLongClick(View v) {
+        Log.v("metronome", "longClick");
+        startAutoMode(v, true);
+        return false;
+      }
+    });
+    upButton.setOnTouchListener(buttonTouchListener);
+
+    downButton.setOnClickListener(new View.OnClickListener() {
+      public void onClick(View v) {
+        decreaseTempo(v);
+      }
+    });
+    downButton.setOnLongClickListener(new View.OnLongClickListener() {
+      public boolean onLongClick(View v) {
+        startAutoMode(v, false);
+        return false;
+      }
+    });
+    downButton.setOnTouchListener(buttonTouchListener);
+
+  }
 }
 

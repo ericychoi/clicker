@@ -24,19 +24,15 @@ public class MiniMetronomeFragment extends MetronomeFragment {
     Log.v("metronome", "mini metronome called");
   }
 
+  /*
   @Override
   public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
     inflater.inflate(R.menu.clicker_mini, menu);
     Metronome m = ((ClickerMain) getActivity()).getMetronome();
-    for (int i = 0; i < menu.size(); i++) {
-      MenuItem mi = menu.getItem(i);
-      if (mi.getItemId() == R.id.action_tempo) {
-        m.setTempoMenuItem(mi);
-      }
-    }
     m.updateTempoMenuItem();
     super.onCreateOptionsMenu(menu, inflater);
   }
+  */
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

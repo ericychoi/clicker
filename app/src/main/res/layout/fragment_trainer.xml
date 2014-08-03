@@ -9,13 +9,25 @@
         android:layout_height="wrap_content"
         android:padding="10dp"
         android:orientation="horizontal">
-         <TextView
+        <TextView
             android:id="@+id/tempo"
             android:layout_width="fill_parent"
-            android:layout_height="40dp"
-            android:layout_weight="1"
+            android:layout_height="fill_parent"
+            android:layout_weight="0.5"
             android:text="120"
             android:textSize="40dp"
             android:gravity="center"/>
+        <Button
+            android:text="UP"
+            android:id="@+id/up_button"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"/>
+        <Button
+            android:text="DOWN"
+            android:id="@+id/down_button"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"/>
     </LinearLayout>
 </LinearLayout>

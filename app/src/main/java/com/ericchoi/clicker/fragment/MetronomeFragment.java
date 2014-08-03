@@ -78,51 +78,12 @@ public class MetronomeFragment extends Fragment {
     ClickerMain clickerActivity = (ClickerMain)getActivity();
     final Metronome metronome = clickerActivity.getMetronome();
 
-    View.OnTouchListener buttonTouchListener = new View.OnTouchListener() {
-      public boolean onTouch(View v, MotionEvent event) {
-        if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
-          metronome.stopAutoMode();
-        }
-        return false;
-      }
-    };
-
     // buttons
     final Button startButton = (Button) rootView.findViewById(R.id.start_button);
-    startButton.setOnClickListener(new View.OnClickListener() {
-      public void onClick(View v) {
-        metronome.startOrPause(v);
-      }
-    });
-
     final Button upButton = (Button) rootView.findViewById(R.id.up_button);
-    upButton.setOnClickListener(new View.OnClickListener() {
-      public void onClick(View v) {
-        metronome.increaseTempo(v);
-      }
-    });
-    upButton.setOnLongClickListener(new View.OnLongClickListener() {
-      public boolean onLongClick(View v) {
-        Log.v("metronome", "longClick");
-        metronome.startAutoMode(v, true);
-        return false;
-      }
-    });
-    upButton.setOnTouchListener(buttonTouchListener);
-
     final Button downButton = (Button) rootView.findViewById(R.id.down_button);
-    downButton.setOnClickListener(new View.OnClickListener() {
-      public void onClick(View v) {
-        metronome.decreaseTempo(v);
-      }
-    });
-    downButton.setOnLongClickListener(new View.OnLongClickListener() {
-      public boolean onLongClick(View v) {
-        metronome.startAutoMode(v, false);
-        return false;
-      }
-    });
-    downButton.setOnTouchListener(buttonTouchListener);
+
+    metronome.setBasicButtons(startButton, upButton, downButton);
 
     final Button beatButton = (Button) rootView.findViewById(R.id.beat_button);
     beatButton.setOnClickListener(new View.OnClickListener() {
