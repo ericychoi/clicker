@@ -231,7 +231,7 @@ public class Metronome {
     return 60 * 1000 / this.tempo.get();
   }
 
-  void updateTempoView() {
+  public void updateTempoView() {
     this.tempoView.setText(this.tempo.get() + "");
   }
 
@@ -313,7 +313,7 @@ public class Metronome {
 
   public void setTempoMenuItem(MenuItem tempoMenuItem) { this.tempoMenuItem = tempoMenuItem; }
 
-  public void setBasicButtons(Button startButton, Button upButton, Button downButton) {
+  public void setBasicButtons(Button upButton, Button downButton) {
     View.OnTouchListener buttonTouchListener = new View.OnTouchListener() {
       public boolean onTouch(View v, MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
@@ -322,11 +322,6 @@ public class Metronome {
         return false;
       }
     };
-    startButton.setOnClickListener(new View.OnClickListener() {
-      public void onClick(View v) {
-        startOrPause(v);
-      }
-    });
 
     upButton.setOnClickListener(new View.OnClickListener() {
       public void onClick(View v) {
@@ -357,4 +352,3 @@ public class Metronome {
 
   }
 }
-

@@ -79,11 +79,17 @@ public class MetronomeFragment extends Fragment {
     final Metronome metronome = clickerActivity.getMetronome();
 
     // buttons
-    final Button startButton = (Button) rootView.findViewById(R.id.start_button);
     final Button upButton = (Button) rootView.findViewById(R.id.up_button);
     final Button downButton = (Button) rootView.findViewById(R.id.down_button);
 
-    metronome.setBasicButtons(startButton, upButton, downButton);
+    metronome.setBasicButtons(upButton, downButton);
+
+    final Button startButton = (Button) rootView.findViewById(R.id.start_button);
+    startButton.setOnClickListener(new View.OnClickListener() {
+      public void onClick(View v) {
+        metronome.startOrPause(v);
+      }
+    });
 
     final Button beatButton = (Button) rootView.findViewById(R.id.beat_button);
     beatButton.setOnClickListener(new View.OnClickListener() {

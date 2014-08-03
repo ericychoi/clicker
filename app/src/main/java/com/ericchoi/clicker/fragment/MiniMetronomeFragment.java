@@ -3,11 +3,10 @@ package com.ericchoi.clicker.fragment;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.ericchoi.clicker.ClickerMain;
 import com.ericchoi.clicker.Metronome;
@@ -24,22 +23,21 @@ public class MiniMetronomeFragment extends MetronomeFragment {
     Log.v("metronome", "mini metronome called");
   }
 
-  /*
-  @Override
-  public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-    inflater.inflate(R.menu.clicker_mini, menu);
-    Metronome m = ((ClickerMain) getActivity()).getMetronome();
-    m.updateTempoMenuItem();
-    super.onCreateOptionsMenu(menu, inflater);
-  }
-  */
-
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     Log.v("metronome", "frag onCreateView called");
     //TODO factor set up code out
     final View rootView = inflater.inflate(R.layout.fragment_trainer, container, false);
-    //super.initView(rootView);
+
+    // buttons
+    final Button upButton = (Button) rootView.findViewById(R.id.up_button);
+    final Button downButton = (Button) rootView.findViewById(R.id.down_button);
+
+    Metronome metronome = ((ClickerMain) getActivity()).getMetronome();
+    metronome.setBasicButtons(upButton, downButton);
+    metronome.setTempoView((TextView) rootView.findViewById(R.id.tempo));
+    metronome.updateTempoView();
+
     return rootView;
   }
 
