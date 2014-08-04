@@ -2,6 +2,7 @@ package com.ericchoi.clicker;
 
 import android.app.Activity;
 import android.media.SoundPool;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -50,6 +51,8 @@ public class Metronome {
   final private AtomicInteger beatsPerMeasure = new AtomicInteger(4);
   private TextView BPMView;
   private TextView BPMLabelView;
+
+  long lastClick = -1;
 
   public boolean isRunning() {
     return isRunning.get();
@@ -127,6 +130,12 @@ public class Metronome {
         a.runOnUiThread( new Runnable() {
           @Override
           public void run() {
+            long currentTime = SystemClock.elapsedRealtime();
+            if (lastClick != -1 ) {
+              Log.v("metronome", "click! at " + (currentTime - lastClick));
+            }
+            lastClick = currentTime;
+
             // not sure why, but can't rely on fillBefore on animation for this
             circle.setAlpha(1.0f);
             circle.startAnimation(circleAnimation);

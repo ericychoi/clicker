@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ericchoi.clicker.ClickerMain;
@@ -37,6 +38,12 @@ public class MiniMetronomeFragment extends MetronomeFragment {
     metronome.setBasicButtons(upButton, downButton);
     metronome.setTempoView((TextView) rootView.findViewById(R.id.tempo));
     metronome.updateTempoView();
+
+    // only one circle
+    ImageView circle = (ImageView) rootView.findViewById(R.id.minimetronome_circle);
+    circle.setAlpha (0.0f);
+    metronome.setLeftCircle(circle);
+    metronome.setRightCircle(circle);
 
     return rootView;
   }

@@ -2,7 +2,9 @@ clicker
 =======
 
 # TODO
-//TODO sticking exercise (separate activity)
+//TODO circle on mini metronome
+//list adapter with sticking data
+//mini metronome with landscape
 //TODO test on vibrate / silent mode
 //TODO clean up un used buttons
 //TODO update text on start stop button
