@@ -2,8 +2,8 @@ clicker
 =======
 
 # TODO
-//TODO circle on mini metronome
 //list adapter with sticking data
+//TODO bug when the activity is resumed, the sound is gone
 //mini metronome with landscape
 //TODO test on vibrate / silent mode
 //TODO clean up un used buttons

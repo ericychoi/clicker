@@ -5,13 +5,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.ericchoi.clicker.ClickerMain;
 import com.ericchoi.clicker.Metronome;
 import com.ericchoi.clicker.R;
+
+import java.util.ArrayList;
 
 /**
  * Created by ericchoi on 7/24/14.
@@ -44,6 +48,27 @@ public class MiniMetronomeFragment extends MetronomeFragment {
     circle.setAlpha (0.0f);
     metronome.setLeftCircle(circle);
     metronome.setRightCircle(circle);
+
+    // Construct the data source
+    ArrayList<String> stickings = new ArrayList<String>();
+    String[] values = new String[] { "Android", "iPhone", "WindowsMobile",
+      "Blackberry", "WebOS", "Ubuntu", "Windows7", "Max OS X",
+      "Linux", "OS/2", "Ubuntu", "Windows7", "Max OS X", "Linux",
+      "OS/2", "Ubuntu", "Windows7", "Max OS X", "Linux", "OS/2",
+      "Android", "iPhone", "WindowsMobile" };
+    for (int i = 0; i < values.length; ++i) {
+      stickings.add(values[i]);
+    }
+
+    // Create the adapter to convert the array to views
+    ArrayAdapter<String> adapter = new ArrayAdapter(
+      this.getActivity().getApplicationContext(),
+      android.R.layout.simple_list_item_1,
+      stickings);
+
+    // Attach the adapter to a ListView
+    ListView listView = (ListView) rootView.findViewById(R.id.sticking_list);
+    listView.setAdapter(adapter);
 
     return rootView;
   }
