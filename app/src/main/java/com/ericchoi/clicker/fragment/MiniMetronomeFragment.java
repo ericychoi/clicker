@@ -15,7 +15,11 @@ import com.ericchoi.clicker.ClickerMain;
 import com.ericchoi.clicker.Metronome;
 import com.ericchoi.clicker.R;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
+
+import com.google.gson.stream.JsonReader;
 
 /**
  * Created by ericchoi on 7/24/14.
@@ -50,14 +54,29 @@ public class MiniMetronomeFragment extends MetronomeFragment {
     metronome.setRightCircle(circle);
 
     // Construct the data source
+    InputStream in = getResources().openRawResource(R.raw.stickings);
     ArrayList<String> stickings = new ArrayList<String>();
-    String[] values = new String[] { "Android", "iPhone", "WindowsMobile",
-      "Blackberry", "WebOS", "Ubuntu", "Windows7", "Max OS X",
-      "Linux", "OS/2", "Ubuntu", "Windows7", "Max OS X", "Linux",
-      "OS/2", "Ubuntu", "Windows7", "Max OS X", "Linux", "OS/2",
-      "Android", "iPhone", "WindowsMobile" };
-    for (int i = 0; i < values.length; ++i) {
-      stickings.add(values[i]);
+
+    JsonReader reader;
+    try {
+      reader = new JsonReader(new InputStreamReader(in, "UTF-8"));
+      reader.beginObject();
+      if (reader.nextName().equals("stickings")) {
+        reader.beginArray();
+        while (reader.hasNext()) {
+          String s = "";
+          reader.beginArray();
+          while (reader.hasNext()) {
+            s += reader.nextString();
+          }
+          stickings.add(s);
+          reader.endArray();
+        }
+        reader.endArray();
+      }
+      reader.endObject();
+    } catch (Exception e) {
+      Log.e("metronome", "couldn't read with jsonReader");
     }
 
     // Create the adapter to convert the array to views
